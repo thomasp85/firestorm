@@ -15,3 +15,5 @@ Imports:
     R6,
     rlang,
     websocket
+URL: https://github.com/thomasp85/firestorm
+BugReports: https://github.com/thomasp85/firestorm/issues
