@@ -5,6 +5,9 @@
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/thomasp85/firestorm/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/thomasp85/firestorm/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/thomasp85/firestorm/graph/badge.svg)](https://app.codecov.io/gh/thomasp85/firestorm)
 <!-- badges: end -->
 
 firestorm is a package providing load-balancing and reverse proxying for
