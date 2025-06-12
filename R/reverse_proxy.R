@@ -44,10 +44,10 @@ ReverseProxy <- R6::R6Class(
     on_attach = function(app, ...) {
       app$on("request", function(request, ...) {
         private$http_forward(request)
-      })
+      }, pos = 1)
       app$on("websocket-opened", function(server, connection, ...) {
         private$ws_forward(connection, server)
-      })
+      }, pos = 1)
     }
   ),
   active = list(
