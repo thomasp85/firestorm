@@ -16,11 +16,11 @@ both HTTP and WebSocket
 
 ## Installation
 
-You can install the development version of firestorm from
-[GitHub](https://github.com/) with:
-
 ``` r
-# install.packages("pak")
+# You can install marquee from CRAN
+pak::pak("firestorm")
+
+# Or get the development version from Github
 pak::pak("thomasp85/firestorm")
 ```
 

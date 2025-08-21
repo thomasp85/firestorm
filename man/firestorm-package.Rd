@@ -6,7 +6,7 @@
 \alias{firestorm-package}
 \title{firestorm: Reverse Proxy and Load Balancing for Fiery}
 \description{
-Provides facilities for setting up fiery apps as a reverse proxy.
+Provides plugins for setting up fiery apps as a reverse proxy. This allows you to use a fiery server as a front for multiple services or even work as a load-balancer.
 }
 \seealso{
 Useful links:
@@ -17,7 +17,12 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Thomas Lin Pedersen \email{thomasp85@gmail.com} (\href{https://orcid.org/0000-0002-5147-4711}{ORCID})
+\strong{Maintainer}: Thomas Lin Pedersen \email{thomas.pedersen@posit.co} (\href{https://orcid.org/0000-0002-5147-4711}{ORCID})
+
+Other contributors:
+\itemize{
+  \item Posit Software, PBC (03wc8by49) [copyright holder, funder]
+}
 
 }
 \keyword{internal}

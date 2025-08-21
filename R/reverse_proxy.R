@@ -41,8 +41,10 @@
 #' )
 #'
 #' ## Attach it to a fiery app
-#' # app <- fiery::Fire$new()
-#' # app$attach(rev_prox)
+#' if (requireNamespace("fiery", quietly = TRUE)) {
+#'   app <- fiery::Fire$new()
+#'   app$attach(rev_prox)
+#' }
 #'
 ReverseProxy <- R6::R6Class(
   "ReverseProxy",
