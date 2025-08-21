@@ -2,3 +2,6 @@
 
 export(ReverseProxy)
 import(rlang)
+importFrom(R6,R6Class)
+importFrom(cli,cli_abort)
+importFrom(websocket,WebSocket)

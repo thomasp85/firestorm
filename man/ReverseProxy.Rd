@@ -24,6 +24,29 @@ the generator:
 }
 }
 
+\examples{
+# Create a reverse proxy forwarding requests to http://example.com
+rev_prox <- ReverseProxy$new(
+  "http://example.com"
+)
+
+# Use root to only proxy requests to a specific subpath
+rev_prox <- ReverseProxy$new(
+  "http://example.com",
+  root = "forward"
+)
+
+# Use except to exempt certain subpaths from proxying
+rev_prox <- ReverseProxy$new(
+  "http://example.com",
+  except = c("no_proxy", "dont/proxy")
+)
+
+## Attach it to a fiery app
+# app <- fiery::Fire$new()
+# app$attach(rev_prox)
+
+}
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
@@ -45,7 +68,7 @@ the generator:
 \subsection{Method \code{new()}}{
 Create a new reverse proxy
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ReverseProxy$new(target, root = "/", continue = FALSE, trust = FALSE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{ReverseProxy$new(target, root = "/", except = NULL, trust = FALSE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -57,8 +80,8 @@ Create a new reverse proxy
 requests to subsets of the root path will be proxied, and the root will
 be stripped from the URL path before being forwarded}
 
-\item{\code{continue}}{Should handling of the request be passed on to other
-handlers in the fiery app}
+\item{\code{except}}{Subpaths to \code{root} that should be excempt from forwarding
+to the target.}
 
 \item{\code{trust}}{Are requests coming from a trusted source}
 }

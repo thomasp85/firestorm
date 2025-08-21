@@ -16,7 +16,33 @@
 #'  \code{route <- ReverseProxy$new(target, root = "/", continue = FALSE, trust = FALSE)}
 #' }
 #'
+#' @importFrom R6 R6Class
+#' @importFrom cli cli_abort
+#' @importFrom websocket WebSocket
+#'
 #' @export
+#'
+#' @examples
+#' # Create a reverse proxy forwarding requests to http://example.com
+#' rev_prox <- ReverseProxy$new(
+#'   "http://example.com"
+#' )
+#'
+#' # Use root to only proxy requests to a specific subpath
+#' rev_prox <- ReverseProxy$new(
+#'   "http://example.com",
+#'   root = "forward"
+#' )
+#'
+#' # Use except to exempt certain subpaths from proxying
+#' rev_prox <- ReverseProxy$new(
+#'   "http://example.com",
+#'   except = c("no_proxy", "dont/proxy")
+#' )
+#'
+#' ## Attach it to a fiery app
+#' # app <- fiery::Fire$new()
+#' # app$attach(rev_prox)
 #'
 ReverseProxy <- R6::R6Class(
   "ReverseProxy",
