@@ -86,7 +86,7 @@ the generator:</p>
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>Create a new reverse proxy</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/ReverseProxy.html">ReverseProxy</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">target</span>, root <span class="op">=</span> <span class="st">"/"</span>, continue <span class="op">=</span> <span class="cn">FALSE</span>, trust <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/ReverseProxy.html">ReverseProxy</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">target</span>, root <span class="op">=</span> <span class="st">"/"</span>, except <span class="op">=</span> <span class="cn">NULL</span>, trust <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -101,9 +101,9 @@ requests to subsets of the root path will be proxied, and the root will
 be stripped from the URL path before being forwarded</p></dd>
 
 
-<dt><code>continue</code></dt>
-<dd><p>Should handling of the request be passed on to other
-handlers in the fiery app</p></dd>
+<dt><code>except</code></dt>
+<dd><p>Subpaths to <code>root</code> that should be excempt from forwarding
+to the target.</p></dd>
 
 
 <dt><code>trust</code></dt>
@@ -154,6 +154,31 @@ called directly</p><div class="section">
 
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create a reverse proxy forwarding requests to http://example.com</span></span></span>
+<span class="r-in"><span><span class="va">rev_prox</span> <span class="op">&lt;-</span> <span class="va">ReverseProxy</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"http://example.com"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Use root to only proxy requests to a specific subpath</span></span></span>
+<span class="r-in"><span><span class="va">rev_prox</span> <span class="op">&lt;-</span> <span class="va">ReverseProxy</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"http://example.com"</span>,</span></span>
+<span class="r-in"><span>  root <span class="op">=</span> <span class="st">"forward"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Use except to exempt certain subpaths from proxying</span></span></span>
+<span class="r-in"><span><span class="va">rev_prox</span> <span class="op">&lt;-</span> <span class="va">ReverseProxy</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="st">"http://example.com"</span>,</span></span>
+<span class="r-in"><span>  except <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"no_proxy"</span>, <span class="st">"dont/proxy"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Attach it to a fiery app</span></span></span>
+<span class="r-in"><span><span class="co"># app &lt;- fiery::Fire$new()</span></span></span>
+<span class="r-in"><span><span class="co"># app$attach(rev_prox)</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
