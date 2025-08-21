@@ -17,3 +17,8 @@ Imports:
     websocket
 URL: https://github.com/thomasp85/firestorm
 BugReports: https://github.com/thomasp85/firestorm/issues
+Suggests: 
+    fiery,
+    later,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

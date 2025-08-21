@@ -3,3 +3,5 @@
 ^README\.Rmd$
 ^\.github$
 ^codecov\.yml$
+^[\.]?air\.toml$
+^\.vscode$

@@ -10,9 +10,9 @@
 coverage](https://codecov.io/gh/thomasp85/firestorm/graph/badge.svg)](https://app.codecov.io/gh/thomasp85/firestorm)
 <!-- badges: end -->
 
-firestorm is a package providing load-balancing and reverse proxying for
-fiery based web servers as plugins. It supports proxying of both HTTP
-and WebSocket
+firestorm is a package providing load-balancing (WIP) and reverse
+proxying for fiery based web servers as plugins. It supports proxying of
+both HTTP and WebSocket
 
 ## Installation
 
@@ -26,7 +26,9 @@ pak::pak("thomasp85/firestorm")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+Below you can see an example of using firestorm with a fiery server.
+Here we relay all requests to the fiery server to another service
+running on the same computer.
 
 ``` r
 library(fiery)

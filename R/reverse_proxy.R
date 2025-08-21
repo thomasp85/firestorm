@@ -26,14 +26,17 @@ ReverseProxy <- R6::R6Class(
     #' @param root The root path the reverse proxy should respond to. Only
     #' requests to subsets of the root path will be proxied, and the root will
     #' be stripped from the URL path before being forwarded
-    #' @param continue Should handling of the request be passed on to other
-    #' handlers in the fiery app
+    #' @param except Subpaths to `root` that should be excempt from forwarding
+    #' to the target.
     #' @param trust Are requests coming from a trusted source
     #'
-    initialize = function(target, root = "/", continue = FALSE, trust = FALSE) {
+    initialize = function(target, root = "/", except = NULL, trust = FALSE) {
       private$target <- paste0(sub("/$", "", target), "/")
-      private$root_regex <- paste0("^/", sub("^/", "", root))
-      private$continue <- continue
+      private$root_regex <- sub("/?$", "/", sub("^/?", "^/", root))
+      if (!is.null(except)) {
+        except <- paste0(sub("/?$", "/", sub("^/", "", except)), collapse = "|")
+        private$root_regex <- paste0(private$root_regex, "(?!", except, ")")
+      }
       private$trust <- trust
     },
     #' @description Hook for attaching the plugin to a fiery app. Should not be
@@ -42,12 +45,20 @@ ReverseProxy <- R6::R6Class(
     #' @param ... Ignored
     #'
     on_attach = function(app, ...) {
-      app$on("request", function(request, ...) {
-        private$http_forward(request)
-      }, pos = 1)
-      app$on("websocket-opened", function(server, connection, ...) {
-        private$ws_forward(connection, server)
-      }, pos = 1)
+      app$on(
+        "request",
+        function(request, ...) {
+          private$http_forward(request)
+        },
+        pos = 1
+      )
+      app$on(
+        "websocket-opened",
+        function(server, connection, ...) {
+          private$ws_forward(connection, server)
+        },
+        pos = 1
+      )
     }
   ),
   active = list(
@@ -59,11 +70,10 @@ ReverseProxy <- R6::R6Class(
   private = list(
     target = NULL,
     root_regex = "^/",
-    continue = FALSE,
     trust = FALSE,
 
     http_forward = function(request) {
-      if (!grepl(private$root_regex, request$path)) {
+      if (!grepl(private$root_regex, request$path, perl = TRUE)) {
         return()
       }
       request$trust <- private$trust
@@ -72,16 +82,30 @@ ReverseProxy <- R6::R6Class(
         "Via" = paste0(c(headers$Via, "HTTP/1.1 firestorm"), collapse = ", "),
         "X-Forwarded-Host" = request$host,
         "X-Forwarded-Proto" = request$protocol,
-        "X-Forwarded-For" = paste0(c(headers$X_Forwarded_For, request$origin$REMOTE_ADDR), collapse = ",")
+        "X-Forwarded-For" = paste0(
+          c(headers$x_forwarded_for, request$origin$REMOTE_ADDR),
+          collapse = ","
+        )
       )
-      url <- paste0(private$target, sub(private$root_regex, "", request$path))
-      request$forward(url, headers = new_headers, return = function(...) private$continue)
+      url <- paste0(
+        private$target,
+        sub(private$root_regex, "", request$path, perl = TRUE)
+      )
+      request$forward(url, headers = new_headers)
     },
     ws_forward = function(client, app) {
-      if (!grepl(private$root_regex, paste0("/", sub("^/", "", client$request$PATH_INFO)))) {
+      if (
+        !grepl(
+          private$root_regex,
+          paste0("/", sub("^/", "", client$request$PATH_INFO))
+        )
+      ) {
         return()
       }
-      protocols <- unlist(strsplit(client$request$HTTP_SEC_WEBSOCKET_PROTOCOL %||% "", ",\\s?"))
+      protocols <- unlist(strsplit(
+        client$request$HTTP_SEC_WEBSOCKET_PROTOCOL %||% "",
+        ",\\s?"
+      ))
       headers <- list()
       if (!is.null(client$request$HTTP_HOST)) {
         headers$Host <- client$request$HTTP_HOST
@@ -96,12 +120,16 @@ ReverseProxy <- R6::R6Class(
         c(client$request$HTTP_X_FORWARDED_FOR, client$request$REMOTE_ADDR),
         collapse = ", "
       )
-      headers$`X-Forwarded-Proto` = if (private$trust && !is.null(client$request$HTTP_X_FORWARDED_PROTO)) {
+      headers$`X-Forwarded-Proto` = if (
+        private$trust && !is.null(client$request$HTTP_X_FORWARDED_PROTO)
+      ) {
         client$request$HTTP_X_FORWARDED_PROTO
       } else {
         "http"
       }
-      headers$`X-Forwarded-Host` = if (private$trust && !is.null(client$request$HTTP_X_FORWARDED_HOST)) {
+      headers$`X-Forwarded-Host` = if (
+        private$trust && !is.null(client$request$HTTP_X_FORWARDED_HOST)
+      ) {
         client$request$HTTP_X_FORWARDED_HOST
       } else {
         client$request$HTTP_HOST
@@ -123,7 +151,7 @@ ReverseProxy <- R6::R6Class(
       }
 
       client$onMessage(function(binary, message) {
-        if (server$readyState() == 0) {
+        if (server$readyState() != 1) {
           msg_buffer[length(msg_buffer) + 1] <<- message
         } else {
           server$send(message)
