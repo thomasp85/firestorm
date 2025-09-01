@@ -1,15 +1,15 @@
 Package: firestorm
-Title: Reverse Proxy and Load Balancing for Fiery
-Version: 0.1.0
+Title: Reverse Proxy and Load Balancing for 'fiery'
+Version: 0.1.0.9000
 Authors@R: c(
     person("Thomas Lin", "Pedersen", , "thomas.pedersen@posit.co", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-5147-4711")),
     person("Posit Software, PBC", role = c("cph", "fnd"),
            comment = c(ROR = "03wc8by49"))
   )
-Description: Provides plugins for setting up fiery apps as a reverse proxy. This
-    allows you to use a fiery server as a front for multiple services or even
-    work as a load-balancer.
+Description: Provides plugins for setting up 'fiery' apps as a reverse proxy.
+    This allows you to use a 'fiery' server as a front for multiple services or
+    even work as a load-balancer.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
